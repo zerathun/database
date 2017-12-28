@@ -1,11 +1,10 @@
 {
-"name": "zerathun/database",
-"repositories": [
-	{
-		"type": "vcs",
-		"url": "https://github.com/zerathun/database"
-	}
-]
+	"name" : "zerathun/database",
+	"autoload" : {
+		"psr-4" : {
+			"Database" : "src"
+		}
+	},
+	"description" : "Database Library",
+	"license" : "LGPL-2.0+"
 }
-
-
