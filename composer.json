@@ -2,7 +2,7 @@
 	"name" : "zerathun/database",
 	"autoload" : {
 		"psr-4" : {
-			"Database" : "src"
+			"Database\\" : "src"
 		}
 	},
 	"description" : "Database Library",
