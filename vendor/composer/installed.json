@@ -1,1 +1,31 @@
-[]
+[
+    {
+        "name": "zerathun/funclib",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zerathun/funclib.git",
+            "reference": "737aa8294b42453d4bd8d18d2ae14312e103d2da"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zerathun/funclib/zipball/737aa8294b42453d4bd8d18d2ae14312e103d2da",
+            "reference": "737aa8294b42453d4bd8d18d2ae14312e103d2da",
+            "shasum": ""
+        },
+        "time": "2017-12-28T06:03:44+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Funclib\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL-2.0+"
+        ],
+        "description": "Database Library"
+    }
+]

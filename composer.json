@@ -1,7 +1,8 @@
 {
 	"name" : "zerathun/database",
 	"require" : {
-		"zerathun/funclib" : "*"
+		"zerathun/funclib" : "dev-master",
+		"php" : ">=5.3.2"
 	},
 	"autoload" : {
 		"psr-4" : {
@@ -9,5 +10,17 @@
 		}
 	},
 	"description" : "Database Library",
-	"license" : "LGPL-2.0+"
+	"license" : "LGPL-2.0+",
+	"version" : "1.0.0-alpha",
+	"authors" : [{
+			"name" : "zeradun",
+			"email" : "zeradun@embin.ch",
+			"homepage" : "https://www.embin.ch",
+			"role" : "Developer"
+		}
+	],
+	"support" : {
+		"email" : "zeradun@embin.ch",
+		"source" : "https://github.com/zerathun/database"
+	}
 }
