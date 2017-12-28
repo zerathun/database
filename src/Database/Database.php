@@ -17,12 +17,12 @@ class Database {
     private $dbh;
     
     public function __construct() {
-
+        
     }
     
     public function connect() {
         if(empty($server) || empty($db) || empty($uname)) {
-            throw new Exception("DB Credentials not set");
+            throw new \Exception("DB Credentials not set");
         }
         
         $dsn = 'mysql:dbname='.$db.';host='.$server;
@@ -35,6 +35,13 @@ class Database {
             FileLog::getInstance()->appendLog("SQL Failure: \n $sql\n".$e->getMessage());
             print_r('Connection failed: ' . $e->getMessage());
         }
+    }
+    
+    public function setServerSettings($server, $db, $uname, $pw) {
+        $this->setServer($server);
+        $this->setDatabase($db);
+        $this->setUsername($uname);
+        $this->setPassword($pw);
     }
     
     public function setDatabase($db) {
