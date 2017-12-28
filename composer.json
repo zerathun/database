@@ -1,0 +1,11 @@
+{
+"name": "zerathun/database",
+"repositories": [
+	{
+		"type": "vcs",
+		"url": "https://github.com/zerathun/database"
+	}
+]
+}
+
+
