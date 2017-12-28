@@ -1,5 +1,8 @@
 {
 	"name" : "zerathun/database",
+	"require" : {
+		"zerathun/funclib" : "*"
+	},
 	"autoload" : {
 		"psr-4" : {
 			"Database\\" : "src"
