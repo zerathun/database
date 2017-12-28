@@ -24,7 +24,7 @@ class ComposerStaticInita3c1c3c070ad740fc5bcc3bad0da2af7
         ),
         'Database\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src',
+            0 => __DIR__ . '/../..' . '/src/Database',
         ),
     );
 

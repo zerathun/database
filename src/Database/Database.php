@@ -1,9 +1,9 @@
 <?php
-namespace src;
+namespace Database;
 
 use \mysqli;
-use EmbDev\models\FileLog;
-use EmbDev\models\ErrorHandler;
+//use EmbDev\models\FileLog;
+//use EmbDev\models\ErrorHandler;
 
 class Database {
     private $sqlC;

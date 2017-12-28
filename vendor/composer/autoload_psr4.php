@@ -7,5 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Funclib\\' => array($vendorDir . '/zerathun/funclib/src'),
-    'Database\\' => array($baseDir . '/src'),
+    'Database\\' => array($baseDir . '/src/Database'),
 );

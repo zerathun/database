@@ -6,7 +6,7 @@
 	},
 	"autoload" : {
 		"psr-4" : {
-			"Database\\" : "src"
+			"Database\\" : "src/Database"
 		}
 	},
 	"description" : "Database Library",
