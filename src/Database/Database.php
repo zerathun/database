@@ -2,8 +2,8 @@
 namespace Database;
 
 use \mysqli;
-//use EmbDev\models\FileLog;
-//use EmbDev\models\ErrorHandler;
+use Funclib\FileLog;
+use Funclib\ErrorHandler;
 
 class Database {
     private $sqlC;
@@ -21,20 +21,26 @@ class Database {
     }
     
     public function connect() {
-        if(empty($server) || empty($db) || empty($uname)) {
-            throw new \Exception("DB Credentials not set");
+        if(empty($this->server) || empty($this->db) || empty($this->uname)) {
+            $e = new \Exception("DB Credentials not set");
+            $this->postError($e);
+            throw $e;
         }
         
-        $dsn = 'mysql:dbname='.$db.';host='.$server;
-        $user = $uname;
-        $password = $pw;
+        $dsn = 'mysql:dbname='.$this->db.';host='.$this->server;
+        $user = $this->uname;
+        $password = $this->pw;
         
         try {
             $this->dbh = new  \PDO($dsn, $user, $password);
         } catch (\PDOException $e) {
-            FileLog::getInstance()->appendLog("SQL Failure: \n $sql\n".$e->getMessage());
-            print_r('Connection failed: ' . $e->getMessage());
+            $this->postError($e);
         }
+    }
+    
+    private function postError(Exception $e) {
+        FileLog::getInstance()->appendLog("SQL Error: \n $sql\n".$e->getMessage());
+        ErrorHandler::getErrorHandler()->addException($e);
     }
     
     public function setServerSettings($server, $db, $uname, $pw) {
@@ -59,7 +65,6 @@ class Database {
     public function setServer($server) {
         $this->server = $server;
     }
-    
     
     public function getDBName() {
         return $this->db;
@@ -87,6 +92,12 @@ class Database {
      * @return Resource
      */
     public function sql_query($query) {
+        if(empty($this->dbh)) {
+            $error_string = "SQL Failure: No Database selected / No Connection made in Program";
+            $e = new \Exception($error_string);
+            $this->postError($e);
+            return false;
+        }
         
         try {
             $stmt = $this->dbh->prepare($query);
@@ -98,9 +109,7 @@ class Database {
             }
             return $stmt;
         } catch(\Exception $e) {
-            print "Error: ".$e->getMessage()."\n\n$query\n\n";
-            FileLog::getInstance()->appendLog("SQL Failure: \n $sql\n".$e->getMessage());
-            ErrorHandler::getErrorHandler()->addException($e);
+            $this->postError($e);
         }
     }
     
