@@ -15,9 +15,10 @@ class Database {
     private $uname;
     private $pw;
     private $dbh;
+    private static $counter = 0;
     
-    public function __construct() {
-        
+    private function __construct() {
+        Database::$counter++;
     }
     
     public function connect() {
@@ -38,7 +39,11 @@ class Database {
         }
     }
     
-    private function postError(Exception $e) {
+    public function getInstanceCounter() {
+        return Database::$counter;
+    }
+    
+    private function postError(\Exception $e) {
         FileLog::getInstance()->appendLog("SQL Error: \n $sql\n".$e->getMessage());
         ErrorHandler::getErrorHandler()->addException($e);
     }
@@ -96,6 +101,7 @@ class Database {
             $error_string = "SQL Failure: No Database selected / No Connection made in Program";
             $e = new \Exception($error_string);
             $this->postError($e);
+            print "Error";
             return false;
         }
         
@@ -107,8 +113,10 @@ class Database {
             if(isset($err[0]) && intval($err[0]) != 0) {
                 throw new \Exception($err[0]." ".$err[1]." ".$err[2]);
             }
+            
             return $stmt;
         } catch(\Exception $e) {
+            print "Error";
             $this->postError($e);
         }
     }
@@ -163,19 +171,23 @@ class Database {
     }
     
     public function makeInjectionSafe($input) {
-        preg_match('#\b(SELECT|DELETE|UPDATE|USER|DROP|CREATE|TABLE|ALTER)\b#', $input, $matches);
+        $pregString = "";
+        $rr = Database::getSQLMethods();
+        foreach($rr as $x) {
+            if(strlen($pregString) > 0) {
+                $pregString .= '|';
+            }
+            $pregString .= $x;
+        }
+        preg_match('#\b('.$pregString.')\b#', $input, $matches);
+        
         if(count($matches)  > 0 || Database::isInjectionSafe($input) == false)
             throw new \Exception("SQL Injection Warning");
     }
     
-    /**
-     * returns true if the given string contains no dangerous keywords
-     *
-     * @param String $where_statement
-     * @return Boolean
-     */
-    public static function isInjectionSafe($statement) {
-        $needle = array (
+    
+    private static function getSQLMethods() {
+        return array (
             'DROP',
             'UPDATE',
             'DELETE',
@@ -193,6 +205,16 @@ class Database {
             'LOCK',
             'WRITE'
         );
+    }
+    
+    /**
+     * returns true if the given string contains no dangerous keywords
+     *
+     * @param String $where_statement
+     * @return Boolean
+     */
+    public static function isInjectionSafe($statement) {
+        $needle = Database::getSQLMethods();
         $count = 0;
         foreach ( $needle as $substring ) {
             $count += substr_count ( $statement, $substring );
