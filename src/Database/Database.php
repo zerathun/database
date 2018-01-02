@@ -16,6 +16,7 @@ class Database {
     private $pw;
     private $dbh;
     private static $counter = 0;
+    private $last_query_row_count = 0;
     
     private function __construct() {
         Database::$counter++;
@@ -108,6 +109,7 @@ class Database {
         try {
             $stmt = $this->dbh->prepare($query);
             $stmt->execute();
+            $this->last_query_row_count = $stmt->rowCount();
             // Check if there is any error
             $err = $stmt->errorInfo();
             if(isset($err[0]) && intval($err[0]) != 0) {
@@ -168,6 +170,10 @@ class Database {
     
     public function getQueryCount() {
         return $this->query_counter;
+    }
+    
+    public function getAffectedRows() {
+        return $this->last_query_row_count;
     }
     
     public function makeInjectionSafe($input) {
