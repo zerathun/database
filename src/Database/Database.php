@@ -22,6 +22,7 @@ class Database {
     
     private function __construct() {
         Database::$counter++;
+        // test
     }
     
     public function connect() {
