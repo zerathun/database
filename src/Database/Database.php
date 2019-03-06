@@ -1,6 +1,7 @@
 <?php
 namespace Database;
 
+
 use \mysqli;
 use Funclib\FileLog;
 use Funclib\ErrorHandler;
@@ -10,6 +11,7 @@ class Database {
     private $mysql;
     private static $instance;
     private $query_counter = 0;
+    private $last_query;
     private $server;
     private $db;
     private $uname;
@@ -45,7 +47,7 @@ class Database {
     }
     
     private function postError(\Exception $e) {
-        FileLog::getInstance()->appendLog("SQL Error: \n $sql\n".$e->getMessage());
+        //FileLog::getInstance()->appendLog("SQL Error: \n $this->last_query\n".$e->getMessage());
         ErrorHandler::getErrorHandler()->addException($e);
     }
     
@@ -76,8 +78,8 @@ class Database {
         return $this->db;
     }
     
-    public static function getInstance() {
-        if (empty ( Database::$instance )) {
+    public static function getInstance($new = false) {
+        if (empty ( Database::$instance ) || $new) {
             Database::startDatabaseConnection ();
         }
         return Database::$instance;
@@ -98,11 +100,11 @@ class Database {
      * @return Resource
      */
     public function sql_query($query) {
+        $this->last_query = $query;
         if(empty($this->dbh)) {
             $error_string = "SQL Failure: No Database selected / No Connection made in Program";
             $e = new \Exception($error_string);
             $this->postError($e);
-            print "Error";
             return false;
         }
         
@@ -118,7 +120,6 @@ class Database {
             
             return $stmt;
         } catch(\Exception $e) {
-            print "Error";
             $this->postError($e);
         }
     }
@@ -159,7 +160,7 @@ class Database {
     
     public function sql_fetch_array($resource) {
         if (empty ( $resource )) {
-            throw new \Exception ( "Resource is empty " );
+            throw new \Exception ( "Resource is empty" );
         }
         return $resource->fetch(\PDO::FETCH_ASSOC);
     }
@@ -178,6 +179,7 @@ class Database {
     
     public function makeInjectionSafe($input) {
         $pregString = "";
+        
         $rr = Database::getSQLMethods();
         foreach($rr as $x) {
             if(strlen($pregString) > 0) {
@@ -185,12 +187,14 @@ class Database {
             }
             $pregString .= $x;
         }
-        preg_match('#\b('.$pregString.')\b#', $input, $matches);
+        
+        if(preg_match('#\b('.$pregString.')\b#', strtoupper($input), $matches)) {
+            throw new \Exception("SQL Injection Warning");
+        }
         
         if(count($matches)  > 0 || Database::isInjectionSafe($input) == false)
             throw new \Exception("SQL Injection Warning");
     }
-    
     
     private static function getSQLMethods() {
         return array (
@@ -209,7 +213,8 @@ class Database {
             'UNDO',
             'UNLOCK',
             'LOCK',
-            'WRITE'
+            'WRITE',
+            'SELECT'
         );
     }
     
@@ -220,6 +225,8 @@ class Database {
      * @return Boolean
      */
     public static function isInjectionSafe($statement) {
+        if(is_array($statement))
+            throw new \Exception("Injection-Safe Statement expects a given string");
         $needle = Database::getSQLMethods();
         $count = 0;
         foreach ( $needle as $substring ) {
