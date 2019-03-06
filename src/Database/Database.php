@@ -31,6 +31,7 @@ class Database {
             throw $e;
         }
         
+        
         $dsn = 'mysql:dbname='.$this->db.';host='.$this->server;
         $user = $this->uname;
         $password = $this->pw;
