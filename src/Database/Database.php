@@ -38,6 +38,7 @@ class Database {
         $password = $this->pw;
         
         try {
+            $this->dbh = NULL;
             $this->dbh = new  \PDO($dsn, $user, $password);
         } catch (\PDOException $e) {
             $this->postError($e);
